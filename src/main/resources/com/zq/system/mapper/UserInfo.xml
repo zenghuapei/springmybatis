@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.system.dao.UserInfoDao">
+	<resultMap type="UserInfo" id="userInfoAccount">
+		<result property="userId" column="user_id"/>
+		<result property="userName" column="user_Name"/>
+		<result property="userSex" column="user_Sex"/>
+		<result property="userBirthday" column="user_Birthday"/>
+		<association property="account" javaType="Account">
+			<result property="accountId" column="account_Id"/>
+			<result property="account" column="account"/>
+			<result property="passWord" column="passWord"/>
+		</association>
+	</resultMap>
+	<resultMap type="UserInfo" id="userinfo">
+		<result property="userId" column="user_id"/>
+		<result property="userName" column="user_Name"/>
+		<result property="userSex" column="user_Sex"/>
+		<result property="userBirthday" column="user_Birthday"/>
+		<result property="userRecruitment" column="user_recruitment"/>
+		<result property="userNewaddress" column="user_newaddress"/>
+		<result property="userEducation" column="user_education"/>
+		<result property="userState" column="user_state"/>
+		<result property="userRegister" column="user_register"/>
+		<result property="userNumber" column="user_number"/>
+		<result property="userEmail" column="user_email"/>
+		<result property="userUrgentnumber" column="user_urgentnumber"/>
+	</resultMap>
+	<!-- <resultMap type="User" id="userWithAddress">
+		<constructor>
+			<idArg column="userid" javaType="long" />
+			<arg column="name" javaType="string" />
+			<arg column="age" javaType="int" />
+			<arg column="phone" javaType="string" />
+			<arg column="passwd" javaType="string" />
+		</constructor>
+		<collection property="addrs" javaType="arraylist" ofType="Address"
+			column="ownerid" resultMap="addr"/>
+	</resultMap> -->
+	
+	<!--<resultMap type="User" id="user">
+		<id column="uid" javaType="long" />
+		<result column="name" javaType="string" />
+		<result column="age" javaType="int" />
+		<result column="phone" javaType="string" />
+		<result column="passwd" javaType="string" />
+	</resultMap>-->
+
+	<!-- <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="uid">
+		insert into foo.user(name,age,phone,passwd) values(#{name},#{age},#{phone},#{passwd});
+	</insert>
+	<delete id="deleteUser" parameterType="long">
+		delete from foo.user where uid = #{uid}
+	</delete>
+	<update id="updateUser" parameterType="User">
+		update foo.user set 
+		<trim suffixOverrides=",">鍘婚櫎鐢熸垚鐨凷QL璇彞鍚庨潰鐨?,"
+			<if test="name!=null">name=#{name}, </if>
+			<if test="phone!=null">phone=#{phone}, </if>
+			<if test="age!=null">age=#{age}, </if>
+			<if test="passwd!=null">passwd=#{passwd}</if>
+		</trim>
+		<where>userid=#{uid}</where>
+	</update>
+	
+	<select id="getAllUser" resultMap="userWithAddress" parameterType="map">
+		select <include refid="userColumn"/> , <include refid="addrColumn"/>
+		from userinfo u left join address a 
+		on u.userid = a.ownerid
+		
+	</select>
+	<select id="getUser" resultMap="userWithAddress" parameterType="long">
+		select <include refid="userColumn"/>,<include refid="addrColumn"/> from userinfo u
+		left outer join foo.address a on u.userid = a.ownerid
+		<where>u.userid=#{uid}</where>
+	</select>
+	 -->
+	<!--添加用户-->
+	<insert id="insertUserInfo" parameterType="UserInfo">
+	insert into s_userInfo(user_id,user_Name,user_Sex,user_Birthday,user_recruitment,user_newaddress,user_education,user_state,user_register,user_number,user_email,user_urgentnumber) 
+	
+	values(#{userId},#{userName},#{userSex},#{userBirthday},#{userRecruitment},#{userNewaddress},#{userEducation},#{userState},#{userRegister},#{userNumber},#{userEmail},#{userUrgentnumber})	
+	</insert>
+	<!--查询用户和账号信息-->
+	<select id="getUserInfo" resultMap="userInfoAccount" parameterType="string">
+		select u.user_id,u.user_name,u.user_sex,u.user_birthday,a.account,a.password,a.account_id from s_userinfo u join s_account a on a.user_id=u.user_id  
+		<where>a.account=#{account}</where>
+	
+	</select>
+	
+	<!--查询机构下面的用户-->
+	<select id="getPageUserInfo" resultMap="userinfo" parameterType="Page">
+			select u.user_id,
+		       u.user_name,
+		       u.user_sex,
+		       u.user_birthday,
+		       u.user_recruitment,
+		       u.user_newaddress,
+		       u.user_education,
+		       u.user_state,
+		       u.user_register,
+		       u.user_number,
+		       u.user_email,
+		       u.user_urgentnumber
+		  from s_userinfo u, s_userdepartment d
+		 where d.leveldepartment like #{params.departmentId} || '%'
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

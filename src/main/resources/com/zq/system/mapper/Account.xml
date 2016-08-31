@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.system.dao.AccountDao">
+	
+	
+	<!--添加账号-->
+	<insert id="insertAccount" parameterType="Account">	
+		insert into s_account(ACCOUNT_ID,ACCOUNT,PASSWORD,USER_ID) values(#{accountId},#{account},#{passWord},#{userId})
+	</insert>
+</mapper>

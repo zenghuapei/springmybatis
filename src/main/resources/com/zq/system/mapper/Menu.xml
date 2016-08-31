@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.system.dao.MenuDao">
+	<resultMap type="Menu" id="menu">
+		<result property="menuId" column="menu_Id"/>
+		<result property="menuName" column="menu_Name"/>
+		<result property="menuUrl" column="menu_Url"/>
+		<result property="parentId" column="parent_Id"/>
+		<result property="menuDesc" column="menu_Desc"/>
+		<result property="menuType" column="menu_Type"/>
+		<result property="menuLevel" column="menu_level"/>
+		<result property="menuIcon" column="menu_icon"/>
+	</resultMap>
+	
+	
+	<!-- 根据用户ID循环查询所有菜单 -->
+	<select id="getMenuList" resultMap="menu" parameterType="int">
+		SELECT m.menu_id,m.menu_name,m.menu_url,m.parent_id,m.menu_desc,m.menu_type,m.menu_level,m.menu_icon
+		  FROM s_menu m,s_rolemenu r,s_userrole f
+		  where m.menu_id=r.menu_id
+		  and r.role_id=f.role_id
+		  and f.user_id=#{userid}
+		  START WITH m.parent_id = 0
+		CONNECT BY PRIOR m.menu_id = m.parent_id
+		 ORDER SIBLINGS BY m.parent_id
+	</select>
+	<!-- 循环查询所有菜单 -->
+	<select id="getAllMenuList" resultMap="menu">
+		SELECT m.menu_id,m.menu_name,m.menu_url,m.parent_id,m.menu_desc,m.menu_type,m.menu_level,m.menu_icon
+		  FROM s_menu m
+		  START WITH m.parent_id = 0
+		CONNECT BY PRIOR m.menu_id = m.parent_id
+		 ORDER SIBLINGS BY m.parent_id
+	</select>
+	<!-- 查询下级菜单 -->
+	<select id="getLastMenuList" resultMap="menu" parameterType="Page">
+		SELECT m.menu_id,m.menu_name,m.menu_url,m.parent_id,m.menu_desc,m.menu_type,m.menu_level,m.menu_icon
+		  FROM s_menu m
+		  where  m.parent_id=#{params.menuId}
+		 
+	</select>
+	<!-- 添加菜单 -->
+	<insert id="addMenu" parameterType="Menu">
+		insert into s_menu
+		(
+		<trim suffixOverrides="," suffix="">
+		<if test="menuId!=null">menu_id,</if>
+		<if test="menuName!=null">menu_name,</if>
+		<if test="menuUrl!=null">menu_url,</if>
+		<if test="parentId!=null">parent_id,</if>
+		<if test="menuDesc!=null">menu_desc,</if>
+		<if test="menuType!=null">menu_type,</if>
+		<if test="menuLevel!=null">menu_level,</if>
+		<if test="menuIcon!=null">menu_icon,</if>
+		<if test="menuIsEffective!=null">menu_iseffective,</if>
+		</trim>
+		)values(
+		<trim suffixOverrides="," suffix="">
+		<if test="menuId!=null">#{menuId},</if>
+		<if test="menuName!=null">#{menuName},</if>
+		<if test="menuUrl!=null">#{menuUrl},</if>
+		<if test="parentId!=null">#{parentId},</if>
+		<if test="menuDesc!=null">#{menuDesc},</if>
+		<if test="menuType!=null">#{menuType},</if>
+		<if test="menuLevel!=null">#{menuLevel},</if>
+		<if test="menuIcon!=null">#{menuIcon},</if>
+		<if test="menuIsEffective!=null">#{menuIsEffective},</if>
+		</trim>
+		)
+	</insert>
+	<!-- 菜单修改 -->
+	<update id="updateMenu" parameterType="Menu">
+		update s_menu set 
+		<trim suffixOverrides=",">
+			<if test="menuName!=null">menu_name=#{menuName} </if>
+			<if test="menuUrl!=null">menu_url=#{menuUrl} </if>
+			<if test="parentId!=null">parent_id=#{parentId} </if>
+			<if test="menuDesc!=null">menu_desc=#{menuDesc}</if>
+			<if test="menuType!=null">menu_type=#{menuType}</if>
+			<if test="menuLevel!=null">menu_level=#{menuLevel}</if>
+			<if test="menuIcon!=null">menu_icon=#{menuIcon}</if>
+			<if test="menuIsEffective!=null">menu_iseffective=#{menuIsEffective}</if>
+		</trim>
+		<where>menu_id=#{menuId}</where>
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

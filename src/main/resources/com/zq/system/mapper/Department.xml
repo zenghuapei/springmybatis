@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.system.dao.DepartmentDao">
+	<resultMap type="Department" id="department">
+		<result property="departmentId" column="department_Id"/>
+		<result property="departmentName" column="department_Name"/>
+		<result property="departmentCode" column="department_Code"/>
+		<result property="parentId" column="parent_Id"/>
+	</resultMap>
+	
+	
+	<!-- 根据用户id查询部门树 -->
+	<select id="getDepartmentList" resultMap="department" parameterType="int">
+		SELECT m.department_id,m.department_name,m.department_code,m.parent_id
+      FROM s_department m
+      START WITH m.department_id  in (select r.department_id from s_userdepartment r where r.user_id=#{userid})
+    CONNECT BY PRIOR m.department_id = m.parent_id
+     ORDER SIBLINGS BY m.parent_id
+	</select>
+	<!-- 查询下级部门 -->
+	<select id="getDepartmentParentIdList" parameterType="int" resultMap="department">
+		SELECT m.department_id,m.department_name,m.department_code,m.parent_id
+      FROM s_department m
+      
+      <where>m.parent_id=#{departmentId}</where>
+	</select>
+	<select id="getDepartmentParentIdListCount" parameterType="int" resultType="int">
+		SELECT count(*) count
+      FROM s_department m
+      
+      <where>m.parent_id=#{departmentId}</where>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

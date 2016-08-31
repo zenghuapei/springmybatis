@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://http://www.springframework.org/schema/util"
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+	<!-- 需要将applicationContext-bean.xml导入，否则不能够解析到Controller -->
+<!-- 	<import resource="applicationContext.xml"/> -->
+ <!--   	<mvc:annotation-driven /> -->
+   <!-- 启用SpringMVC的注解功能,它会自动注册HandlerMapping、HandlerAdapter、ExceptionResolver的相关实例 -->  
+    <!-- 启用注解，并定义组件查找规则 ，mvc层只负责扫描@Controller -->  
+    <!-- 启用spring mvc 注解 -->  
+    <context:annotation-config />  
+      
+    <!-- 默认的注解映射的支持 -->  
+    <mvc:annotation-driven /> 
+    <mvc:resources location="/scripts/" mapping="/scripts/**" />
+	 <mvc:resources location="/image/" mapping="/image/**" />
+    <context:component-scan base-package="com.zq"/>  
+	    <!-- 完成请求和注解POJO的映射 -->  
+     <bean id="mappingJackson2HttpMessageConverter" 
+        class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">    
+        <property name="supportedMediaTypes">    
+            <list>    
+                <value>text/html;charset=UTF-8</value>    
+            </list>    
+        </property>    
+    </bean>     
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">    
+        <property name="messageConverters">    
+            <list>    
+                <ref bean="mappingJackson2HttpMessageConverter" />
+            </list>    
+        </property>    
+    </bean>
+	 <!-- 跳转视图配置 -->
+	<bean name="viewResolver" 
+	      class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"><!-- 跳转到JSP的视图 -->
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<!-- 相关JSP页面路径配置 -->
+		<property name="prefix"><!-- JSP页面前缀 -->
+			<value>/view/</value>
+		</property>
+		<property name="suffix"><!-- JSP页面后缀 -->
+			<value>.jsp</value>
+		</property>
+	</bean>
+       <bean name="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="UTF-8" />
+	</bean>
+	<!-- <bean id="servletHandlerAdapter"  
+        class="org.springframework.web.servlet.handler.SimpleServletHandlerAdapter" />   -->
+	<!--  配置mvc的拦截器 可以配置多个 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--  需要被拦截的路径 -->
+            <mvc:mapping path="/**"/>
+            <!-- 拦截处理的interceptor -->
+            <bean class="com.zq.system.interceptor.MemberInterceptor">
+        	</bean>      
+        </mvc:interceptor>
+    </mvc:interceptors>
+	<!-- 
+		设置全局异常处理方式。！注意，如果使用XML配置了异常处理方式，
+		那么使用Annotation处理异常的方式将不再被使用。 
+	-->
+	<bean name="exceptionResolver" 
+	      class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!-- 这里的errorPage同样应用viewResolver的前缀、后缀匹配 -->
+				<!-- <prop key="java.lang.Exception">errorPage</prop> -->
+			</props>
+		</property>
+	</bean>
+   
+
+</beans>

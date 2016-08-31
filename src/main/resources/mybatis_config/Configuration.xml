@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="true"/>  
+		<setting name="lazyLoadingEnabled" value="true"/>  
+		<setting name="multipleResultSetsEnabled" value="true"/>  
+		<setting name="useColumnLabel" value="true"/>  
+		<setting name="useGeneratedKeys" value="true"/>  
+		<setting name="defaultExecutorType" value="SIMPLE"/>  
+		<setting name="defaultStatementTimeout" value="25000"/>  
+	</settings>
+	
+	<typeAliases>
+		<typeAlias type="com.zq.system.entity.UserInfo" alias="UserInfo"/>	
+	    <typeAlias type="com.zq.system.entity.Account" alias="Account"/>
+	    <typeAlias type="com.zq.system.entity.Menu" alias="Menu"/>	
+	    <typeAlias type="com.zq.system.entity.Department" alias="Department"/>
+	    <typeAlias type="com.zq.system.entity.Dict" alias="Dict"/>	
+	    <typeAlias type="com.zq.common.page.Page" alias="Page"/>	
+	</typeAliases>
+	
+ 	<plugins>  
+       <plugin interceptor="com.zq.common.page.OraclePaginationPlugin">  
+           <property name="databaseType" value="Oracle"/>  
+       </plugin>  
+    </plugins>  
+	
+	<mappers>
+		<mapper resource="com/zq/system/mapper/UserInfo.xml"/>
+		<mapper resource="com/zq/system/mapper/Menu.xml"/>
+		<mapper resource="com/zq/system/mapper/Department.xml"/>
+		<mapper resource="com/zq/system/mapper/Account.xml"/>
+		<mapper resource="com/zq/system/mapper/Dict.xml"/>
+	</mappers>
+	
+</configuration>

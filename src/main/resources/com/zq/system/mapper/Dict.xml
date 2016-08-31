@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zq.system.dao.DictDao">
+	<resultMap type="Dict" id="dict">
+		<result property="dictId" column="dict_Id"/>
+		<result property="dictCode" column="dict_Code"/>
+		<result property="dictName" column="dict_Name"/>
+		<result property="dictValue" column="dict_Value"/>
+		<result property="parentId" column="parent_Id"/>
+		<result property="dictDesc" column="dict_Desc"/>
+		<result property="dictIsEffective" column="dict_IsEffective"/>
+	</resultMap>
+	
+	<!-- 查询单个字典项的子集 -->
+	<select id="getDictList" resultMap="dict" parameterType="int">
+		select d.dict_id,d.dict_code,d.dict_name,d.dict_value,d.parent_id,d.dict_desc,dict_IsEffective from s_dict d
+		
+		<where>d.parent_id=#{dictId} </where>
+	</select>
+	<!-- 字典菜单树 -->
+	<select id="getDictTree" resultMap="dict">
+	
+		select d.dict_id,d.dict_code,d.dict_name,d.dict_value,d.parent_id,d.dict_desc,dict_IsEffective from s_dict d  START WITH d.parent_id = 0
+		CONNECT BY PRIOR d.dict_id = d.parent_id
+		 ORDER SIBLINGS BY d.parent_id
+	</select>
+	<!-- 查询单条字典项 -->
+	<select id="getDict" resultMap="dict" parameterType="int">
+		select d.dict_id,d.dict_code,d.dict_name,d.dict_value,d.parent_id,d.dict_desc,dict_IsEffective from s_dict d  where d.dict_id = #{dictId}
+	</select>
+
+
+	<!--添加字典项-->
+	<insert id="insertDict" parameterType="Dict">
+		insert into s_dict(dict_Id,dict_Code,dict_Name,dict_Value,parent_Id,dict_Desc,dict_IsEffective)
+		values(#{dictId},#{dictCode},#{dictName},#{dictValue},#{parentId},#{dictDesc},#{dictIsEffective})
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
